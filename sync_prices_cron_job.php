@@ -4,6 +4,45 @@ echo "hello";
 require "./inc/database.php";
 require "./inc/functions.php";
 
+
+function Query_get__product_with_sku($sku)
+{
+	$Query__graphQl = array(
+		"query" => '{
+			products(first: 1, query: "sku:' . $sku . '") {
+			  edges {
+				node {
+				  id
+				  title
+				  variants(first: 1) {
+					edges {
+					  node {
+						id
+						title
+						sku
+						price
+						inventoryQuantity
+						inventoryItem {
+							id
+						}
+						fulfillmentService {
+							location {
+							  id
+							  name
+							}
+						}
+					  }
+					}
+				  }
+				}
+			  }
+			}
+		  }'
+	);
+	return $Query__graphQl;
+}
+
+
 $Total__products__updated = 0;
 $GraphQL__rate_limit_ = 50;
 $GOTDB___products_result = [];
@@ -171,6 +210,9 @@ if (sizeof($GetDB_Shopify_SHOP) > 0) {
 
     } // end foreach loop
 } // end if 
+
+
+
 
 
 echo "Done Updating Products...";
